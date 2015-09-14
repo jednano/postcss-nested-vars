@@ -48,7 +48,7 @@ a {
 
 You can also target rule selectors, at-rule params and declaration properties with a special `$(varName)` syntax, same as [`postcss-simple-vars`](https://github.com/postcss/postcss-simple-vars):
 
-```scss
+```css
 $bar: BAR;
 $(bar) {}
 @media foo$(bar) {
@@ -58,7 +58,7 @@ $(bar) {}
 
 Transpiles into:
 
-```scss
+```css
 BAR {}
 @media fooBAR {
 	foo-BAR-baz: qux;

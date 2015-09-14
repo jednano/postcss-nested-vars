@@ -1,6 +1,6 @@
 {
   "name": "postcss-nested-vars",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "PostCSS plugin for nested variables.",
   "main": "dist/lib/plugin.js",
   "scripts": {

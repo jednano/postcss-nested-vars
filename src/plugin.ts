@@ -1,16 +1,26 @@
-﻿///<reference path="../node_modules/postcss/postcss.d.ts" />
-import postcss from 'postcss';
+﻿import * as postcss from 'postcss';
 
 const plugin = 'postcss-nested-vars';
 
-export default postcss.plugin<PostCssNestedVars.Options>(plugin, (options = <any>{}) => {
+interface Hash<T> {
+	[key: string]: T;
+}
+
+const PostCssNestedVars =
+postcss.plugin<PostCssNestedVars.Options>(plugin, (options = {}) => {
 
 	options.logLevel = options.logLevel || 'error';
 
 	const errorContext = { plugin };
 	const specialSearchValue = /\$\(([\w\d-_]+)\)/g;
 
-	const log: (message: string, node: postcss.Node, result: postcss.Result) => void = {
+	const logMap: {
+		[index: string]: (
+			message: string,
+			node: postcss.Node,
+			result: postcss.Result
+		) => void;
+	} = {
 		error(message: string, node: postcss.Node) {
 			throw node.error(message, errorContext);
 		},
@@ -20,13 +30,15 @@ export default postcss.plugin<PostCssNestedVars.Options>(plugin, (options = <any
 		silent() {
 			// noop
 		}
-	}[options.logLevel];
+	};
+
+	const log = logMap[options.logLevel];
 
 	if (!log) {
 		throw new Error(`Invalid logLevel: ${options.logLevel}`);
 	}
 
-	const globals = {};
+	const globals: Hash<any[]> = {};
 	if (options.globals) {
 		Object.keys(options.globals).forEach(key => {
 			globals[key] = [options.globals[key]];
@@ -37,8 +49,12 @@ export default postcss.plugin<PostCssNestedVars.Options>(plugin, (options = <any
 		walk(root, result, globals);
 	};
 
-	function walk(container: postcss.Container, result: postcss.Result, vars: Object) {
-		const containerVars = {};
+	function walk(
+		container: postcss.Container,
+		result: postcss.Result,
+		vars: Hash<any>
+	) {
+		const containerVars: Hash<any> = {};
 
 		container.walk(node => {
 			if (node.type === 'rule') {
@@ -60,7 +76,7 @@ export default postcss.plugin<PostCssNestedVars.Options>(plugin, (options = <any
 		});
 
 		function resolveContainer(container2: postcss.Container, prop: string) {
-			if (container2[prop].indexOf('$(') !== -1) {
+			if ((container2 as any)[prop].indexOf('$(') !== -1) {
 				replaceAllVars(container2, prop, specialSearchValue);
 			}
 			walk(container2, result, vars);
@@ -91,25 +107,34 @@ export default postcss.plugin<PostCssNestedVars.Options>(plugin, (options = <any
 			}
 		}
 
-		function replaceAllVars(obj: Object, prop: string, searchValue: RegExp) {
-			obj[prop] = obj[prop].replace(searchValue, (m, varName: string) => {
-				const stack = vars[varName];
-				if (!stack || !stack.length) {
-					log(`Undefined variable: ${varName}`, <postcss.Node>obj, result);
-					return `$${varName}`;
+		function replaceAllVars(
+			obj: postcss.Node,
+			prop: string,
+			searchValue: RegExp
+		) {
+			(obj as any)[prop] = (obj as any)[prop].replace(
+				searchValue,
+				(m: string, varName: string) => {
+					const stack = vars[varName];
+					if (!stack || !stack.length) {
+						log(`Undefined variable: ${varName}`, obj, result);
+						return `$${varName}`;
+					}
+					return stack[stack.length - 1];
 				}
-				return stack[stack.length - 1];
-			});
+			);
 		}
 	}
 });
 
-export module PostCssNestedVars {
+namespace PostCssNestedVars {
 	export interface Options {
 		/**
 		 * Global variables that can be referenced from any context.
 		 */
-		globals?: Object;
+		globals?: {
+			[key: string]: any;
+		};
 		/**
 		 * If a variable cannot be resolved, this specifies how to handle it.
 		 * Possible values: error, warn, silent. `warn` and `silent` modes will
@@ -118,3 +143,5 @@ export module PostCssNestedVars {
 		logLevel?: string;
 	}
 }
+
+export = PostCssNestedVars;

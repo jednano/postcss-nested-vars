@@ -6,8 +6,9 @@
 
 [![NPM version](http://img.shields.io/npm/v/postcss-nested-vars.svg?style=flat)](https://www.npmjs.org/package/postcss-nested-vars)
 [![npm license](http://img.shields.io/npm/l/postcss-nested-vars.svg?style=flat-square)](https://www.npmjs.org/package/postcss-nested-vars)
-[![Travis Build Status](https://img.shields.io/travis/jedmao/postcss-nested-vars.svg?label=unix)](https://travis-ci.org/jedmao/postcss-nested-vars)
-[![AppVeyor Build Status](https://img.shields.io/appveyor/ci/jedmao/postcss-nested-vars.svg?label=windows)](https://ci.appveyor.com/project/jedmao/postcss-nested-vars)
+[![Travis Build Status](https://img.shields.io/travis/jedmao/postcss-nested-vars.svg)](https://travis-ci.org/jedmao/postcss-nested-vars)
+[![codecov](https://codecov.io/gh/jedmao/postcss-nested-vars/branch/master/graph/badge.svg)](https://codecov.io/gh/jedmao/postcss-nested-vars)
+[![Dependency Status](https://gemnasium.com/badges/github.com/jedmao/postcss-nested-vars.svg)](https://gemnasium.com/github.com/jedmao/postcss-nested-vars)
 
 [![npm](https://nodei.co/npm/postcss-nested-vars.svg?downloads=true)](https://nodei.co/npm/postcss-nested-vars/)
 
@@ -81,22 +82,15 @@ $ npm install postcss-nested-vars
 ### JavaScript
 
 ```js
-postcss([
-	require('postcss-nested-vars')(/* options */),
-	// more plugins...
-])
+postcss([ require('postcss-nested-vars')(/* options */) ]);
 ```
 
 ### TypeScript
 
 ```ts
-///<reference path="node_modules/postcss-nested-vars/.d.ts" />
-import postcssNestedVars from 'postcss-nested-vars';
+import * as postcssNestedVars from 'postcss-nested-vars';
 
-postcss([
-	postcssNestedVars(/* options */),
-	// more plugins...
-])
+postcss([ postcssNestedVars(/* options */) ]);
 ```
 
 ## Options

@@ -201,7 +201,8 @@ test('ignores comments', macro,
 	'/* $foo */'
 );
 
-test('option.globals - sets global variables (i.e., can be read in any context)', macro,
+test(
+	'option.globals - sets global variables (i.e., can be read in any context)', macro,
 	`foo:$foo`,
 	`foo:bar`,
 	{ globals: { foo: 'bar' }}
@@ -219,19 +220,17 @@ test('option.logLevel: error - throws when a variable is undefined', macro,
 );
 
 ['warn', 'silent'].forEach(logLevel => {
+	test(`option.logLevel: ${logLevel} - does not throw when a variable is undefined`, macro,
+		'foo:$foo',
+		'foo:$foo',
+		{ logLevel }
+	);
 
-		test(`option.logLevel: ${logLevel} - does not throw when a variable is undefined`, macro,
-			'foo:$foo',
-			'foo:$foo',
-			{ logLevel }
-		);
-
-		test(`option.logLevel: ${logLevel} - preserves the original value`, macro,
-			'foo:$foo',
-			'foo:$foo',
-			{ logLevel }
-		);
-
+	test(`option.logLevel: ${logLevel} - preserves the original value`, macro,
+		'foo:$foo',
+		'foo:$foo',
+		{ logLevel }
+	);
 });
 
 test('option.logLevel: foo - throws an invalid logLevel error', macro,

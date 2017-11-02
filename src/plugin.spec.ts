@@ -1,4 +1,4 @@
-﻿import test, { ContextualTestContext } from 'ava';
+﻿import test, { TestContext } from 'ava';
 import * as postcss from 'postcss';
 
 import * as plugin from './plugin';
@@ -240,7 +240,7 @@ test('option.logLevel: foo - throws an invalid logLevel error', macro,
 );
 
 function macro(
-	t: ContextualTestContext,
+	t: TestContext,
 	input: string,
 	expected?: string | RegExp,
 	options?: plugin.Options
